@@ -22,21 +22,20 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install selenium  # Install Selenium directly
-          pip install webdriver-manager  # Install webdriver-manager
+          pip install selenium
+          pip install webdriver-manager
 
       - name: Run punchin.py script
         run: |
-          cd punchinnn  # Navigate to the directory where punchin.py is located
-          python punchin.py  # Run the Python script
-
-      - name: Upload page dump
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: html-debug
-          path: punchinnn/*.html
-   
+          cd punchinnn
+          python punchin.py
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
+
+      - name: Upload page dump
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-debug
+          path: punchinnn/*.html
