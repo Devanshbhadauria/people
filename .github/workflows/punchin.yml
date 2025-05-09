@@ -2,8 +2,7 @@ name: Punch-In Workflow
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -22,9 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install selenium
-          pip install webdriver-manager
-          pip install beautifulsoup4
+          pip install selenium webdriver-manager beautifulsoup4
 
       - name: Run punchin.py script
         run: |
@@ -34,9 +31,11 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
 
-      - name: Upload page dump
+      - name: Upload page dump and screenshot
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: html-debug
-          path: punchinnn/*.html
+          path: |
+            punchinnn/punchin-failure.html
+            punchinnn/punchin-failure.png
