@@ -1,30 +1,33 @@
-name: PeopleStrong Punch-In
+name: Punch-In Workflow
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
-  schedule:
-    - cron: '0 3 * * 1-5'  # 8:30 AM IST, Mon–Fri
 
 jobs:
-  punch_in:
+  run_punchin:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.x'
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt || echo "No requirements.txt found, skipping..."
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Add this line if you have a requirements.txt
 
-      - name: Run punchin.py
+      - name: Run punchin.py script
+        run: |
+          cd punchinnn  # Navigate to the directory where punchin.py is located
+          python punchin.py  # Run the Python script
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
-        run: |
-          python punchin.py
