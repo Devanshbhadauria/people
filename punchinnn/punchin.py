@@ -23,11 +23,18 @@ def punch_in():
     try:
         driver.get(LOGIN_URL)
 
+
+        
         # Wait for username input field to be present
         username_field = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "username"))
         )
         username_field.send_keys(USERNAME)
+        print("Logging in...")
+        driver.find_element(By.ID, "username").send_keys(USERNAME)
+        print("Entering password...")
+        driver.find_element(By.ID, "password").send_keys(PASSWORD)
+        print("Clicking login button...")
 
         # Wait for password input field to be present
         password_field = WebDriverWait(driver, 10).until(
