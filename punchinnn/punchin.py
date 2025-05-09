@@ -7,7 +7,7 @@ import time
 
 USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
-LOGIN_URL = "https://your.peoplestrong.url"  # Replace with actual login URL
+LOGIN_URL = "https://ofbusiness.peoplestrong.com/altLogin.jsf"  # Replace with actual login URL
 
 def punch_in():
     options = webdriver.ChromeOptions()
@@ -25,10 +25,10 @@ def punch_in():
         driver.find_element(By.ID, "password").send_keys(PASSWORD)
         driver.find_element(By.ID, "loginButton").click()
 
-        time.sleep(5)  # Wait for page to load
+        time.sleep(10)  # Wait for page to load
 
         # Replace this with actual Punch In button
-        punch_btn = driver.find_element(By.XPATH, "//button[contains(text(), 'Punch In')]")
+        punch_btn = driver.find_element(By.XPATH, "//button[contains(text(), 'Punch out`')]")
         punch_btn.click()
 
         print("✅ Punch In successful")
