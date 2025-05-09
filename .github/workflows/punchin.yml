@@ -29,6 +29,14 @@ jobs:
         run: |
           cd punchinnn  # Navigate to the directory where punchin.py is located
           python punchin.py  # Run the Python script
+
+      - name: Upload page dump
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-debug
+          path: punchinnn/*.html
+   
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
