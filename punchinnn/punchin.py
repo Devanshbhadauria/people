@@ -1,65 +1,51 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import os
-import time
+# ADD THIS at the top
+from bs4 import BeautifulSoup
 
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
-LOGIN_URL = "https://ofbusiness.peoplestrong.com/altLogin.jsf"
+# REPLACE the try block with this:
+try:
+    print("🌐 Opening login page...")
+    driver.get(LOGIN_URL)
 
-def punch_in():
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
+    # Wait for JS to load the page
+    time.sleep(10)
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    # Dump HTML content for debug
+    page_source = driver.page_source
+    with open("page_dump.html", "w", encoding="utf-8") as f:
+        f.write(page_source)
+    print("📄 Saved page HTML to page_dump.html")
 
-    try:
-        print("🌐 Opening login page...")
-        driver.get(LOGIN_URL)
+    # Use BeautifulSoup to verify elements
+    soup = BeautifulSoup(page_source, "html.parser")
+    if soup.find(id="loginForm:j_idt21") is None:
+        print("❌ Could not find username field in HTML.")
+    else:
+        print("✅ Found username field in HTML.")
 
-        # Wait for username field
-        print("⌛ Waiting for username field...")
-        username_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "loginForm:j_idt21"))
-        )
-        username_field.send_keys(USERNAME)
-        print("✅ Username entered.")
+    # Try locating username field with Selenium
+    username_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "loginForm:j_idt21"))
+    )
+    username_field.send_keys(USERNAME)
+    print("✅ Username entered.")
 
-        # Wait for password field
-        password_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "loginForm:j_idt25"))
-        )
-        password_field.send_keys(PASSWORD)
-        print("✅ Password entered.")
+    password_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "loginForm:j_idt25"))
+    )
+    password_field.send_keys(PASSWORD)
+    print("✅ Password entered.")
 
-        # Wait for login button
-        login_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, "loginForm:j_idt29"))
-        )
-        login_button.click()
-        print("🔐 Login button clicked.")
+    login_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "loginForm:j_idt29"))
+    )
+    login_button.click()
+    print("🔐 Login button clicked.")
 
-        # Wait for Flutter-based Punch In button — this may fail if the button is inside a canvas
-        print("⌛ Waiting for Punch In button (if it's a native HTML element)...")
-        WebDriverWait(driver, 15).until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'Punch In')]"))
-        )
-        punch_btn = driver.find_element(By.XPATH, "//button[contains(text(), 'Punch In')]")
-        punch_btn.click()
-        print("✅ Punch In clicked successfully!")
-
-    except Exception as e:
-        print(f"❌ Error: {e}")
-
-    finally:
-        driver.quit()
-        print("🧹 Browser closed.")
-
-if __name__ == "__main__":
-    punch_in()
+except Exception as e:
+    print(f"❌ Error: {e}")
+    # Save page source in case of error
+    with open("error_page.html", "w", encoding="utf-8") as f:
+        f.write(driver.page_source)
+finally:
+    driver.quit()
+    print("🧹 Browser closed.")
