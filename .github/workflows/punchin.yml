@@ -22,7 +22,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install selenium  # Install Selenium directl
+          pip install selenium  # Install Selenium directly
+          pip install webdriver-manager  # Install webdriver-manager
 
       - name: Run punchin.py script
         run: |
